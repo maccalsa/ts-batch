@@ -13,20 +13,40 @@ export interface Tasklet {
   execute(context: ExecutionContext): Promise<RepeatStatus>;
 }
 
+export interface RetryPolicy {
+  maxRetries: number;
+  delayMs?: number; // Delay in milliseconds between retries.
+  /**
+   * A predicate to decide whether the error should be retried.
+   * By default, all errors are considered retryable.
+   */
+  shouldRetry?: (error: any) => boolean;
+}
+
 export class TaskletStep implements Step {
   private tasklet: Tasklet;
+  private retryPolicy?: RetryPolicy;
 
-  constructor(tasklet: Tasklet) {
+  constructor(tasklet: Tasklet, retryPolicy?: RetryPolicy) {
     this.tasklet = tasklet;
+    this.retryPolicy = retryPolicy;
   }
 
   public async execute(context: ExecutionContext): Promise<void> {
-    console.log("Executing TaskletStep...");
-    let status = await this.tasklet.execute(context);
-    // Re-execute if the tasklet indicates it is continuable.
-    while (status === RepeatStatus.CONTINUABLE) {
-      status = await this.tasklet.execute(context);
-    }
+    console.log("Executing TaskletStep with retry mechanism...");
+    let status: RepeatStatus;
+    do {
+      // Wrap the tasklet execution in the withRetry function.
+      status = await withRetry(
+        () => this.tasklet.execute(context),
+        this.retryPolicy?.maxRetries || 0,
+        this.retryPolicy?.delayMs || 0,
+        (error, attempt) => {
+          console.warn(`Attempt ${attempt} failed with error: ${error}`);
+        },
+        this.retryPolicy?.shouldRetry
+      );
+    } while (status === RepeatStatus.CONTINUABLE);
     console.log("TaskletStep complete.");
   }
 }

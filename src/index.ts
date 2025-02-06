@@ -7,11 +7,40 @@ import {
   ItemReader,
   ItemWriter,
   Job,
+  RetryPolicy,
   Tasklet,
   TaskletStep,
 } from "./tsboot/core";
 import { RepeatStatus } from "./tsboot/core";
 import { ExecutionContext } from "./tsboot/execution-context";
+
+// Define a retry policy that will retry up to 3 times with a 500ms delay.
+const retryPolicy: RetryPolicy = {
+  maxRetries: 3,
+  delayMs: 500,
+  shouldRetry: (error: any) => {
+    // For instance, only retry for errors that are transient.
+    return error.message.includes("Transient");
+  },
+};
+
+// A sample tasklet that sometimes fails.
+export class UnstableTasklet implements Tasklet {
+  private counter = 0;
+
+  public async execute(context: ExecutionContext): Promise<RepeatStatus> {
+    this.counter++;
+    if (Math.random() < 0.5) {
+      // Simulate a transient failure.
+      throw new Error("Transient error occurred");
+    }
+    console.log(`UnstableTasklet succeeded on iteration ${this.counter}`);
+    // Run only once for this example.
+    return RepeatStatus.FINISHED;
+  }
+}
+
+// Define a retry policy that will retry up to 3 times with a 500ms delay.
 
 // A simple reader that returns numbers 1 to n.
 export class NumberReader implements ItemReader<number> {
@@ -66,13 +95,22 @@ program
     console.log(`Hello, ${options.name}!`);
   })
   .addCommand(
-    new Command("job").description("Run a job").action(async (options) => {
-      console.log(`Running job...`);
-      await runJob().catch(console.error);
-    })
-  );
-
-program.parse(process.argv);
+    new Command("job")
+      .description("Run a job")
+      .action(async (options) => {
+        console.log(`Running job...`);
+        await runJob().catch(console.error);
+      }))
+      .addCommand(
+        new Command("job-with-retry")
+          .description("Run a job with retry")
+          .action(async (options) => {
+            console.log(`Running job with retry...`);
+          await runJobWithRetry().catch(console.error);
+        })
+      )
+  
+  program.parse(process.argv);
 
 async function runJob() {
   const job = new Job("ExampleJob");
@@ -90,4 +128,18 @@ async function runJob() {
 
   // Execute the job with a new execution context.
   await job.execute(new ExecutionContext());
+}
+
+
+
+async function runJobWithRetry() {
+  const job = new Job("ExampleJob2");
+  console.log("job", job);
+
+  const unstableTasklet = new UnstableTasklet();
+  const retryableStep = new TaskletStep(unstableTasklet, retryPolicy);
+  job.addStep(retryableStep);
+
+  // Execute the job with a new execution context.
+  await job.execute(new ExecutionContext()).catch(console.error);
 }
