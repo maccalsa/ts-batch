@@ -1,0 +1,6 @@
+1. add test script to package.json
+
+np jest test
+
+bug in script name 
+"format:"

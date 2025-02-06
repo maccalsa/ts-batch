@@ -1,0 +1,19 @@
+{
+  "name": "soccer-scraper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format:": "npx prettier src/ --write"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "lint-staged": {
+    "*.{jsx,js,ts,tsx}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ]
+  }
+}
