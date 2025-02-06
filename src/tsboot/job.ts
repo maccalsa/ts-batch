@@ -3,9 +3,8 @@ import { Step } from "./interfaces";
 
 export class Job {
   private steps: Step[] = [];
-  public name: string;
 
-  constructor(name: string) {
+  constructor(private name: string) {
     this.name = name;
   }
 

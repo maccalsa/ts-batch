@@ -1,7 +1,7 @@
 import { ExecutionContext } from "./execution-context";
 
 export interface Step {
-  execute(context: ExecutionContext): Promise<void>;
+  execute(_context: ExecutionContext): Promise<void>;
 }
 
 export enum RepeatStatus {
@@ -163,4 +163,49 @@ export async function withRetry<T>(
       }
     }
   }
+}
+
+export interface ChunkRetryPolicies {
+  readerRetryPolicy?: RetryPolicy;
+  processorRetryPolicy?: RetryPolicy;
+  writerRetryPolicy?: RetryPolicy;
+}
+
+export class RetryMetrics {
+  private metrics: { [key: string]: number } = {};
+
+  public increment(key: string) {
+    this.metrics[key] = (this.metrics[key] || 0) + 1;
+  }
+
+  public getMetric(key: string): number {
+    return this.metrics[key] || 0;
+  }
+
+  public getAll(): { [key: string]: number } {
+    return { ...this.metrics };
+  }
+}
+
+export function withStepRetryDecorator(
+  step: Step,
+  retryPolicy: RetryPolicy,
+  metrics: RetryMetrics = new RetryMetrics()
+): Step {
+  return {
+    async execute(context: ExecutionContext) {
+      await withRetry(
+        () => step.execute(context),
+        retryPolicy.maxRetries,
+        retryPolicy.delayMs || 0,
+        (error, attempt) => {
+          console.warn(`Step retry attempt ${attempt}: ${error}`);
+          metrics.increment("stepRetries");
+        },
+        retryPolicy.shouldRetry
+      );
+      console.log("Step executed successfully (with retry if needed).");
+      console.log("Step Retry Metrics:", metrics.getAll());
+    },
+  };
 }

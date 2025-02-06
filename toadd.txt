@@ -4,3 +4,6 @@ np jest test
 
 bug in script name 
 "format:"
+
+husky is broken 
+esling 9 needa a new file structure "flat"
