@@ -1,6 +1,3 @@
-Here's a comprehensive README.md for the TSBatch framework:
-
-```markdown:README.md
 # TSBatch
 
 TSBatch is a lightweight, TypeScript-based batch processing framework inspired by Spring Batch. It provides a robust foundation for building batch applications with features like chunk processing, retry mechanisms, and modular job execution.
