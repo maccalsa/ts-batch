@@ -7,13 +7,14 @@ import {
   NumberReader,
 } from "./examples/chunk-components";
 import { PrintTasklet, UnstableTasklet } from "./examples/tasklets";
-import { ChunkRetryPolicies, withStepRetryDecorator } from "./tsboot/core";
-import { ExecutionContext } from "./tsboot/execution-context";
-import { RetryPolicy } from "./tsboot/interfaces";
-import { Job } from "./tsboot/job";
-import { ChunkStep } from "./tsboot/steps/chunk-step";
-import { RetryableChunkStep } from "./tsboot/steps/retryable-chunk-step";
-import { TaskletStep } from "./tsboot/steps/tasklet-step";
+import { ExecutionContext } from "./tsbatch/execution-context";
+import { RetryPolicy } from "./tsbatch/interfaces";
+import { Job } from "./tsbatch/job";
+import { ChunkRetryPolicies } from "./tsbatch/retry/retry-policies";
+import { ChunkStep } from "./tsbatch/steps/chunk-step";
+import { RetryableChunkStep } from "./tsbatch/steps/retryable-chunk-step";
+import { withStepRetryDecorator } from "./tsbatch/steps/step-decorator";
+import { TaskletStep } from "./tsbatch/steps/tasklet-step";
 
 // Define different retry policies for each phase.
 const chunkRetryPolicies: ChunkRetryPolicies = {

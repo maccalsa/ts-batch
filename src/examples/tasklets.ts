@@ -1,5 +1,5 @@
-import { ExecutionContext } from "../tsboot/execution-context";
-import { RepeatStatus, Tasklet } from "../tsboot/interfaces";
+import { ExecutionContext } from "../tsbatch/execution-context";
+import { RepeatStatus, Tasklet } from "../tsbatch/interfaces";
 
 export class UnstableTasklet implements Tasklet {
   private counter = 0;

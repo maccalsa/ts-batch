@@ -1,4 +1,4 @@
-import { ItemProcessor, ItemReader, ItemWriter } from "../tsboot/interfaces";
+import { ItemProcessor, ItemReader, ItemWriter } from "../tsbatch/interfaces";
 
 export class NumberReader implements ItemReader<number> {
   private current = 1;
