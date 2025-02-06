@@ -5,7 +5,8 @@
   "scripts": {
     "format": "npx prettier src/ --write",
     "test": "jest",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
