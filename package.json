@@ -1,8 +1,11 @@
 {
   "name": "soccer-scraper",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "scrape": "node dist/index.js scrape",
     "format": "npx prettier src/ --write",
     "test": "jest",
     "dev": "ts-node src/index.ts",
@@ -26,7 +29,7 @@
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.13.1",
+    "@types/node": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-check-file": "^3.0.0",
@@ -38,9 +41,11 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.0.0"
   },
   "dependencies": {
-    "commander": "^13.1.0"
+    "commander": "^11.0.0",
+    "puppeteer": "^24.2.0",
+    "ts-batch": "^1.0.0"
   }
 }

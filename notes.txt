@@ -1,0 +1,54 @@
+I want to create a data scraper, leveraging "ts-batch". the site we are targeting is JS heavy so we may need a headless browser solution 
+
+We will leverage "commander" to buikd the cli api.
+
+we want to load data from the specific leagues from 2020 and 2025
+
+2020 - 2021
+2021 - 2022
+2022 - 2023
+2023 - 2024
+2024 - 2025
+
+
+English Permier League ecamples 
+https://uk.soccerway.com/national/england/premier-league/20222023/regular-season
+https://uk.soccerway.com/national/england/premier-league/20242025/regular-season
+
+Englidh Champioship example
+https://uk.soccerway.com/national/england/championship/20242025/regular-season
+
+English league 1 example 
+https://uk.soccerway.com/national/england/league-one/20242025/regular-season
+
+<a class="vsmall" href="pmatch.asp?league=england_2024&amp;stats=1-1-2-2024"><img src="img/own/sshplogo.png" style="padding-top:3px;"></a>
+English league 2 example
+https://uk.soccerway.com/national/england/league-two/20242025/regular-season
+
+each page has this html to which it uses to paginate between matches. By default he page of matches wil be the 
+latest one for that season. So all previous season show you the last matches and you use previous to scroll backward
+This is a js api call, which replaces the mtaches on the page.
+
+<span class="nav_description">
+  <a rel="previous" class="previous " id="page_competition_1_block_competition_matches_10_previous">« Previous</a>
+  <a rel="next" class="next " id="page_competition_1_block_competition_matches_10_next">Next »</a>
+</span>
+
+We are looking for all of the matche urls, and to get them we will need to look for all of the "score-time" nodes
+
+<td class="score-time ">
+    <a href="/matches/2025/02/01/england/premier-league/nottingham-forest-fc/brighton--hove-albion-fc/4366957/">
+        <span class="extra_time_score">7 - 0</span>    
+    </a>
+</td>
+
+I want to create series of json files which are strings of all of the matches that were played that season
+so premier-league-20212022.json for example
+
+this is quite a challeging task to get all matches in sync with the refreshing of the match data on a button click 
+
+we also have to make sure we 
+a) don't do a ddos attack and get blocked 
+b) we want to look like real user, on a real browser, so we do not look we are scraping
+
+  
